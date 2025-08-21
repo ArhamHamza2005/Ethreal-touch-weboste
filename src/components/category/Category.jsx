@@ -11,7 +11,6 @@ const category = [{ name: "MEN SCENTS" }, { name: "WOMEN SCENTS" }, { name: "COS
 
 // Use placeholder images or import your actual images
 const images = [
-  "./img/WhatsApp Image 2025-08-07 at 23.14.02_f77a7b45.jpg",
   "./img/compressed_image_1.jpg",
   "./img/WhatsApp Image 2025-08-07 at 22.46.25_8aa7f467.jpg", 
   "./img/WhatsApp Image 2025-08-07 at 23.02.38_25db1438.jpg",

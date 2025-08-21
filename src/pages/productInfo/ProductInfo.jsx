@@ -10,25 +10,12 @@ import Loader from "../../components/loader/Loader"
 import { useDispatch, useSelector } from "react-redux"
 import { addToCart, deleteFromCart } from "../../redux/cartSlice"
 import toast from "react-hot-toast"
-import {
-  ShoppingCart,
-  Trash2,
-  Star,
-  Heart,
-  Share2,
-  Package,
-  Shield,
-  Truck,
-  RotateCcw,
-  ArrowLeft,
-  Plus,
-  Minus,
-} from "lucide-react"
+import { ShoppingCart, Trash2, Star, Shield, Truck, RotateCcw, ArrowLeft, Plus, Minus } from "lucide-react"
 import { useNavigate } from "react-router"
 
 const ProductInfo = () => {
   const context = useContext(myContext)
-  const { loading, setLoading } = context
+  const { loading, setLoading, userRole } = context
   const [product, setProduct] = useState("")
   const [quantity, setQuantity] = useState(1)
   const [selectedImage, setSelectedImage] = useState(0)
@@ -51,11 +38,17 @@ const ProductInfo = () => {
   const cartItems = useSelector((state) => state.cart)
   const dispatch = useDispatch()
 
-  const addCart = (item) => {
-    dispatch(addToCart({ ...item, quantity }))
-    toast.success("Added to cart")
+ const addCart = (item) => {
+  const token = localStorage.getItem("users") // or whatever you save on login
+  if (!token) {
+    toast.error("Please login to add items to cart")
+    navigate("/login")
+    return
   }
 
+  dispatch(addToCart(item))
+  toast.success("Added to cart")
+}
   const deleteCart = (item) => {
     dispatch(deleteFromCart(item))
     toast.success("Removed from cart")
@@ -115,17 +108,31 @@ const ProductInfo = () => {
 
                 {/* Features */}
                 <div className="grid grid-cols-3 gap-4">
-                  {[
-                    { icon: Shield, text: "Secure Payment" },
-                    { icon: Truck, text: "Fast Delivery" },
-                    { icon: RotateCcw, text: "Easy Returns" },
-                  ].map((feature, index) => (
+                  {[...Array(1)].map((_, i) => (
                     <div
-                      key={index}
+                      key={i}
                       className="bg-gradient-to-br from-[#C2985C]/20 to-[#C2985C]/10 rounded-2xl p-4 text-center backdrop-blur-sm border border-white/10 transform transition-all duration-300 hover:scale-105"
                     >
-                      <feature.icon className="w-6 h-6 text-[#C2985C] mx-auto mb-2" />
-                      <p className="text-white text-sm font-medium">{feature.text}</p>
+                      <Shield className="w-6 h-6 text-[#C2985C] mx-auto mb-2" />
+                      <p className="text-white text-sm font-medium">Secure Payment</p>
+                    </div>
+                  ))}
+                  {[...Array(1)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="bg-gradient-to-br from-[#C2985C]/20 to-[#C2985C]/10 rounded-2xl p-4 text-center backdrop-blur-sm border border-white/10 transform transition-all duration-300 hover:scale-105"
+                    >
+                      <Truck className="w-6 h-6 text-[#C2985C] mx-auto mb-2" />
+                      <p className="text-white text-sm font-medium">Fast Delivery</p>
+                    </div>
+                  ))}
+                  {[...Array(1)].map((_, i) => (
+                    <div
+                      key={i}
+                      className="bg-gradient-to-br from-[#C2985C]/20 to-[#C2985C]/10 rounded-2xl p-4 text-center backdrop-blur-sm border border-white/10 transform transition-all duration-300 hover:scale-105"
+                    >
+                      <RotateCcw className="w-6 h-6 text-[#C2985C] mx-auto mb-2" />
+                      <p className="text-white text-sm font-medium">Easy Returns</p>
                     </div>
                   ))}
                 </div>
@@ -171,9 +178,9 @@ const ProductInfo = () => {
 
                   {/* Price */}
                   <div className="flex items-center gap-4 mb-8">
-                    <span className="text-5xl font-bold text-white">Pkr {product?.price}</span>
+                    <span className="text-5xl font-bold text-white">Pkr {(product?.price * 0.8).toFixed()}</span>
                     <div className="space-y-1">
-                      <span className="text-white/50 text-xl line-through">{(product?.price * 1.2).toFixed(2)}</span>
+                      <span className="text-white/50 text-xl line-through">{product?.price}</span>
                       <div className="bg-green-400/20 text-green-400 px-2 py-1 rounded-full text-sm font-bold">
                         20% OFF
                       </div>
@@ -234,8 +241,6 @@ const ProductInfo = () => {
                       </span>
                       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700"></div>
                     </button>
-
-                   
                   </div>
                 </div>
               </div>

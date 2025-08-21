@@ -1,11 +1,12 @@
 "use client"
 
 import { Link } from "react-router-dom"
-import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin, Heart, ArrowUp } from "lucide-react"
+import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin, Heart, ArrowUp, Sparkles } from "lucide-react"
 import { useState, useEffect } from "react"
 
 const Footer = () => {
   const [showScrollTop, setShowScrollTop] = useState(false)
+  const [logoError, setLogoError] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,6 +18,10 @@ const Footer = () => {
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" })
+  }
+
+  const handleImageError = () => {
+    setLogoError(true)
   }
 
   const socialLinks = [
@@ -41,6 +46,22 @@ const Footer = () => {
     { name: "Accessories", href: "/category/accessories" },
   ]
 
+  // Logo component with fallback
+  const LogoComponent = () => (
+    <div className="w-12 h-12 bg-gradient-to-br from-[#C2985C] to-[#C2985C]/80 rounded-full flex items-center justify-center shadow-lg transform transition-all duration-300 group-hover:scale-110 group-hover:rotate-12 overflow-hidden">
+      {!logoError ? (
+        <img
+          src="/img/Ethereal-Touch-20KB.jpg"
+          alt="Ethereal Touch Logo"
+          className="w-full h-full object-cover rounded-full"
+          onError={handleImageError}
+        />
+      ) : (
+        <Sparkles className="w-6 h-6 text-white" />
+      )}
+    </div>
+  )
+
   return (
     <div className="relative">
       {/* Main Footer */}
@@ -62,11 +83,7 @@ const Footer = () => {
             <div className="lg:col-span-1">
               <div className="group">
                 <div className="flex items-center gap-3 mb-6">
-                  <div className="w-12 h-12 bg-gradient-to-br from-[#C2985C] to-[#C2985C]/80 rounded-full flex items-center justify-center shadow-lg transform transition-all duration-300 group-hover:scale-110 group-hover:rotate-12">
-                    <span className="text-white font-bold text-xl">
-                      <img src="./img/Ethereal-Touch-20KB.jpg" alt="" srcset="" />
-                    </span>
-                  </div>
+                  <LogoComponent />
                   <h2 className="text-3xl font-bold text-white group-hover:text-[#C2985C] transition-colors duration-300">
                     Ethereal Touch
                   </h2>
@@ -183,7 +200,8 @@ const Footer = () => {
               {socialLinks.map((social, index) => (
                 <a
                   key={index}
-                      target="_blank"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   href={social.href}
                   aria-label={social.label}
                   className="group relative w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center text-white/70 hover:text-white hover:bg-[#C2985C] transition-all duration-300 hover:scale-110 hover:rotate-12 overflow-hidden"
