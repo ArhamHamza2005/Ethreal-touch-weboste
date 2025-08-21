@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom"
 import SearchBar from "../searchBar/SearchBar"
 import { useSelector } from "react-redux"
 import { useState, useEffect } from "react"
-import { Home, Package, UserPlus, LogIn, User, ShoppingCart, Shield, LogOut, Menu, X } from "lucide-react"
+import { Home, Package, UserPlus, LogIn, User, ShoppingCart, Shield, LogOut, Menu, X, Sparkles } from "lucide-react"
 
 const Navbar = () => {
   const [user, setUser] = useState(null)
@@ -12,6 +12,7 @@ const Navbar = () => {
   const cartItems = useSelector((state) => state.cart)
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [logoError, setLogoError] = useState(false)
 
   // Update user state when localStorage changes
   useEffect(() => {
@@ -65,6 +66,10 @@ const Navbar = () => {
 
   const closeMobileMenu = () => setMobileMenuOpen(false)
 
+  const handleImageError = () => {
+    setLogoError(true)
+  }
+
   const navItems = [
     { to: "/", label: "Home", icon: Home, show: true },
     { to: "/allproduct", label: "Products", icon: Package, show: true },
@@ -76,6 +81,25 @@ const Navbar = () => {
   ]
 
   const visibleNavItems = navItems.filter((item) => item.show)
+
+  // Logo component with fallback
+  const LogoComponent = () => (
+    <div className="relative">
+      {!logoError ? (
+        <img
+          src="/img/Ethereal-Touch-20KB.jpg"
+          alt="Ethereal-Touch Logo"
+          className="w-12 h-12 rounded-full object-cover border-2 border-[#C2985C]/50 group-hover:border-[#C2985C] transition-all duration-300 group-hover:scale-110"
+          onError={handleImageError}
+        />
+      ) : (
+        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#C2985C] to-[#C2985C]/80 border-2 border-[#C2985C]/50 group-hover:border-[#C2985C] transition-all duration-300 group-hover:scale-110 flex items-center justify-center">
+          <Sparkles className="w-6 h-6 text-white" />
+        </div>
+      )}
+      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#C2985C]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+    </div>
+  )
 
   return (
     <>
@@ -90,14 +114,7 @@ const Navbar = () => {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-3 group" onClick={closeMobileMenu}>
-              <div className="relative">
-                <img
-                  src="./img/Ethereal-Touch-20KB.jpg"
-                  alt="Ethereal-Touch Logo"
-                  className="w-12 h-12 rounded-full object-cover border-2 border-[#C2985C]/50 group-hover:border-[#C2985C] transition-all duration-300 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#C2985C]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              </div>
+              <LogoComponent />
               <span className="text-xl font-bold text-white group-hover:text-[#C2985C] transition-colors duration-300">
                 Ethereal Touch
               </span>

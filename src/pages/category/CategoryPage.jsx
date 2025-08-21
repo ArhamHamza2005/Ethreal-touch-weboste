@@ -13,7 +13,7 @@ import { ShoppingCart, Trash2, Eye, Star, Heart, Package, ArrowLeft, Tag, Filter
 const CategoryPage = () => {
   const { categoryname } = useParams()
   const context = useContext(myContext)
-  const { getAllProduct, loading } = context
+  const { getAllProduct, loading, userRole } = context
   const navigate = useNavigate()
 
   // Filter products by category name
@@ -22,10 +22,17 @@ const CategoryPage = () => {
   const cartItems = useSelector((state) => state.cart)
   const dispatch = useDispatch()
 
-  const addCart = (item) => {
-    dispatch(addToCart(item))
-    toast.success("Added to cart")
+const addCart = (item) => {
+  const token = localStorage.getItem("users") // or whatever you save on login
+  if (!token) {
+    toast.error("Please login to add items to cart")
+    navigate("/login")
+    return
   }
+
+  dispatch(addToCart(item))
+  toast.success("Added to cart")
+}
 
   const deleteCart = (item) => {
     dispatch(deleteFromCart(item))
@@ -164,10 +171,8 @@ const CategoryPage = () => {
                           {/* Price */}
                           <div className="flex items-center justify-between">
                             <div>
-                              <span className="text-3xl font-bold text-white">${price}</span>
-                              <span className="text-white/50 text-lg line-through ml-2">
-                                ${(price * 1.2).toFixed(2)}
-                              </span>
+                              <span className="text-xl font-bold text-white">pkr {(price * 0.8).toFixed()}</span>
+                              <span className="text-white/50 text-sm line-through ml-2">{price}</span>
                             </div>
                             <div className="text-green-400 text-sm font-semibold bg-green-400/20 px-2 py-1 rounded-full">
                               20% OFF

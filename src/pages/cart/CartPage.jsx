@@ -28,12 +28,24 @@ const CartPage = () => {
     dispatch(decrementQuantity(id))
   }
 
+  // Helper function to safely convert price to number
+  const safePrice = (price) => {
+    const numPrice = parseFloat(price)
+    return isNaN(numPrice) ? 0 : numPrice
+  }
+
+  // Helper function to safely convert quantity to number
+  const safeQuantity = (quantity) => {
+    const numQuantity = parseInt(quantity)
+    return isNaN(numQuantity) || numQuantity < 1 ? 1 : numQuantity
+  }
+
   const cartItemTotal = cartItems
-    .map((item) => item.quantity)
+    .map((item) => safeQuantity(item.quantity))
     .reduce((prevValue, currValue) => prevValue + currValue, 0)
 
   const cartTotal = cartItems
-    .map((item) => item.price * item.quantity)
+    .map((item) => safePrice(item.price) * safeQuantity(item.quantity))
     .reduce((prevValue, currValue) => prevValue + currValue, 0)
 
   useEffect(() => {
@@ -126,6 +138,10 @@ const CartPage = () => {
               <div className="lg:col-span-8 space-y-6">
                 {cartItems.map((item, index) => {
                   const { id, title, price, productImageUrl, quantity, category } = item
+                  const itemPrice = safePrice(price)
+                  const itemQuantity = safeQuantity(quantity)
+                  const itemSubtotal = itemPrice * itemQuantity
+
                   return (
                     <div
                       key={index}
@@ -152,7 +168,9 @@ const CartPage = () => {
                               <Package className="w-4 h-4 text-white/60" />
                               <span className="text-white/80 text-sm capitalize">{category}</span>
                             </div>
-                            <p className="text-3xl font-bold text-white">pkr {price}</p>
+                            <p className="text-3xl font-bold text-white">
+                              pkr {itemPrice.toFixed(2)}
+                            </p>
                           </div>
 
                           {/* Quantity Controls */}
@@ -165,7 +183,7 @@ const CartPage = () => {
                                 <Minus className="w-4 h-4" />
                               </button>
                               <span className="mx-4 text-xl font-bold text-white min-w-[3rem] text-center">
-                                {quantity}
+                                {itemQuantity}
                               </span>
                               <button
                                 onClick={() => handleIncrement(id)}
@@ -189,7 +207,9 @@ const CartPage = () => {
                           <div className="pt-4 border-t border-white/20">
                             <div className="flex justify-between items-center">
                               <span className="text-white/80">Subtotal:</span>
-                              <span className="text-2xl font-bold text-white">pkr {(price * quantity).toFixed(2)}</span>
+                              <span className="text-2xl font-bold text-white">
+                                pkr {itemSubtotal.toFixed(2)}
+                              </span>
                             </div>
                           </div>
                         </div>
